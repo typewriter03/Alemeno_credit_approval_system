@@ -1,0 +1,10 @@
+# src/requirements.txt
+
+Django>=4.0
+djangorestframework
+psycopg2-binary
+celery
+redis
+pandas
+openpyxl
+gunicorn

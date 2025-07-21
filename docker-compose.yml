@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+      - POSTGRES_DB=hello_django_dev
+
+  redis:
+    image: redis:6-alpine
+
+  web:
+    build: ./src
+    command: gunicorn credit_approval_system.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./src:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=hello_django_dev
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    build: ./src
+    command: celery -A credit_approval_system worker -l info
+    volumes:
+      - ./src:/app
+    # --- ADD THIS BLOCK ---
+    environment:
+      - POSTGRES_NAME=hello_django_dev
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+    # ----------------------
+    depends_on:
+      - db # Also depends on the DB now
+      - redis
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
