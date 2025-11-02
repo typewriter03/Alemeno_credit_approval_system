@@ -1,6 +1,6 @@
 # Credit Approval System by Abhay Sharma
 
-As per the assignment given to me by Alemeno.
+
 A Django-based backend system for managing customer and loan data, including credit approval logic, REST APIs, background data ingestion using Celery, and Docker support.
 The Whole System is Unit Teested and adjusted according to handle various error and situations
 
